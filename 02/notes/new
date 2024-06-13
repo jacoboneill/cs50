@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo -n "Note name: "
+read note_name
+
+mkdir "$note_name"
+touch "$note_name/main.c"
+ln -fs ../../dependencies/makefile "$note_name/makefile"
