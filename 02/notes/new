@@ -1,7 +1,11 @@
 #!/bin/bash
 
-echo -n "Note name: "
-read note_name
+if [ $# -eq 0 ]; then
+  echo -n "Note name: "
+  read note_name
+else
+  note_name=$1
+fi
 
 mkdir "$note_name"
 touch "$note_name/main.c"
