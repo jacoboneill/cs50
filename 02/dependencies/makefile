@@ -3,7 +3,7 @@ SRCS := $(wildcard *.c)
 TARGETS := $(SRCS:.c=.out)
 
 cs50 = 0
-LIB_PATH = /Users/jacoboneill/Developer/cs50x/01/dependencies/libcs50
+LIB_PATH = /Users/jacoboneill/Developer/cs50x/02/dependencies/libcs50
 DYLIB_NAME = libcs50-11.0.2.dylib
 LIB_NAME = cs50
 LIB_SYM_PATH = $(LIB_PATH)/lib/$(DYLIB_NAME)
