@@ -1,0 +1,13 @@
+sort1 uses: Bubble sort
+
+How do you know?: Sorted was quicker than unsorted. Bubble sort is the only non-Θ algorithm.
+
+sort2 uses: Merge sort
+
+How do you know?: The algorithm was quicker than sort3 and data showed that sorted looked like nlog(n) shape.
+
+sort3 uses: Selection sort
+
+How do you know?: The algorithm was slower than sort 2, looked exponential on the graph, and was the same speed with sorted and unsorted.
+
+For more information, go to https://github.com/jacoboneill/cs50x/blob/7f6be5f3e2534aa9dc060cb7c93a58c52345ce37/03/problem-set/Sort/reasoning.pdf
