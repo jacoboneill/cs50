@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Get the name of the built file you will run later
+bin="$(basename "${1%.c}.out")"
+shift 1
+
+# Use makefile to compile all files
+clear; make clean; make
+if [ $? -ne 0 ]; then
+  echo "Build failed"
+  exit 1
+fi
+
+# Run the file and exit with the same exit code as the c file
+cd build
+./$bin "$@"
+exit_status=$?
+cd ..
+exit $exit_status
