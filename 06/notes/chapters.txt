@@ -1,0 +1,20 @@
+00:00:00 - Introduction
+00:01:01 - Python
+00:07:24 - Speller
+00:13:41 - Filter
+00:17:31 - Face Recognition
+00:20:53 - Functions
+00:33:24 - Types
+00:34:47 - Calculator
+00:44:45 - Conditionals
+00:48:05 - Compare
+00:57:18 - Object-Oriented Programming
+01:02:54 - Loops
+01:13:51 - Meow
+01:21:20 - Truncation
+01:25:54 - Exceptions
+01:33:22 - Mario
+01:39:44 - Lists
+01:49:18 - Dictionaries
+01:59:58 - sys
+02:04:04 - pip
