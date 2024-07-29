@@ -1,6 +1,6 @@
 # SQL
 
-## [Flat-file Databases](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=61s) || 00:01:01
+## [Flat-file Databases](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=61s)
 
 A flat file database is a *"database"* which is stored in a `.txt` or more commonly, a `.csv` file.
 
@@ -55,7 +55,7 @@ main()
 # Scratch: 40
 ```
 
-## [Relational Databases](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=1980s) || 00:33:00
+## [Relational Databases](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=1980s)
 
 SQL databases follow CRUD functions:
 
@@ -226,7 +226,7 @@ UPDATE favourites SET language = 'SQL', problem = 'Fiftyville' WHERE language = 
 ```
 
 
-## [IMDB](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=3511s) || 00:59:30
+## [IMDB](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=3511s)
 
 You can use `JOIN` to join two relational tables together. For example, given two tables `shows` and `ratings` where `ratings` has a `show_id` field. You can get shows of ratings above 6.0 by doing the following:
 
@@ -251,7 +251,7 @@ SELECT title, rating FROM shows JOIN ratings ON shows.id = ratings.show_id WHERE
 ```
 
 
-## [Indexes](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=6444s) || 01:47:24
+## [Indexes](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=6444s)
 
 > To time queries, you can use `.timer` in `sqlite3`
 
@@ -305,17 +305,17 @@ AND name = 'Steve Carell';
 
 The issue with this is that you have to use so much more space for the data structure.
 
-## [Python and SQL](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=6944s) || 01:55:44
+## [Python and SQL](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=6944s)
 
 So, to use SQL in Python, you need to use the `sql` package.
 
-## [Race Conditions](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=7230s) || 02:00:30
+## [Race Conditions](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=7230s)
 
 A race condition is when a variable is being updated on some state and then another user is trying to update it while it is in the process of being updated. For example, if you get home and find you have no milk, you go out and get some milk, then, before you get home, a roomate finds that there is no milk so they go out to get milk. Now you have twice as much milk as you needed, it's going to go sour and, well, no use crying over spilled milk. The solution is to use some SQL syntax:
 
 `BEGIN TRANSACTION` and `COMMIT` can be wrapped around a SQL query to avoid these issues.
 
-## [SQL injection attacks](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=7607s) || 02:06:47
+## [SQL injection attacks](https://www.youtube.com/watch?v=1RCMYG8RUSE&t=7607s)
 
 SQL injection is when a user uses an input that can be translated into a different SQL query. For example, for a login, if the query is:
 
