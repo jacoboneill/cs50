@@ -1,0 +1,14 @@
+Looking at the average energy, valence, and danceability by using `SELECT AVG(songs.energy), AVG(songs.valence), AVG(songs.danceability) FROM songs;`, I get the following results:
+
+average_energy    |average_valence    |average_danceability|
+------------------+-------------------+--------------------+
+0.6590600000000001|0.48444299999999996|             0.71646|
+
+I can conclude that they have high energy and danceability, and a average, but slightly sadder taste in music.
+
+This, however, can be misleading for a number of reasons, including:
+- Using their account to play a generic playlist for work
+- Sharing their account with someone else
+- Going through phases of listening to different types of music
+
+A way I would try to improve it, would be to also include the listen count, and the genre and then train an AI model to give an Aura.
