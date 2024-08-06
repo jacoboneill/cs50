@@ -1,0 +1,81 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+    <title>Trivia!</title>
+    <script>
+      let selected = false;
+      function multiple_choice(selection) {
+        if (selected == false) {
+          if (selection.id == "y") {
+            selection.style.backgroundColor = "green";
+          } else {
+            selection.style.backgroundColor = "red";
+          }
+          selected = true;
+        }
+      }
+
+      function free_choice(form) {
+        if (form.querySelector("#response")) {
+          form.removeChild(form.querySelector("#response"));
+        }
+
+        const text = form.querySelector('input[type="text"]');
+
+        const res = document.createElement("p");
+        res.id = "response";
+
+        if (text.value.toLowerCase() != "scotland") {
+          text.style.backgroundColor = "red";
+          res.textContent = "Incorrect.";
+        } else {
+          text.style.backgroundColor = "green";
+          res.textContent = "Correct!";
+        }
+
+        form.appendChild(res);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Trivia!</h1>
+    </div>
+
+    <div class="container">
+      <div class="section">
+        <h2>Part 1: Multiple Choice</h2>
+        <hr />
+        <h3>What is a group of unicorns known as?</h3>
+        <button class="multi" id="n" onclick="multiple_choice(this)">
+          A herd
+        </button>
+        <button class="multi" id="y" onclick="multiple_choice(this)">
+          A shimmer
+        </button>
+        <button class="multi" id="n" onclick="multiple_choice(this)">
+          A crowd
+        </button>
+        <button class="multi" id="n" onclick="multiple_choice(this)">
+          A rainbow
+        </button>
+      </div>
+
+      <div class="section">
+        <h2>Part 2: Free Response</h2>
+        <hr />
+        <h3>In which country is the national animal a Unicorn?</h3>
+        <form onsubmit="free_choice(this); return false;">
+          <input type="text" />
+          <input type="submit" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
