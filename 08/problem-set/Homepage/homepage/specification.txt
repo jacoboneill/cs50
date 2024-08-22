@@ -1,0 +1,35 @@
+HTML Tags:
+- a
+- br
+- code
+- content
+- div
+- h1
+- h2
+- h3
+- h5
+- img
+- li
+- link
+- main
+- nav
+- ol
+- p
+- script
+- ul
+
+CSS Properties:
+- background-color
+- color
+- display
+- font-size
+- height
+- overflow-y
+- padding
+- position
+- right
+- text-decoration
+- top
+
+Use of JavaScript and Bootstrap
+I used Javascript to automatically generate the Table of Contents on the blog pages. I used bootstrap to style everything, but in particular the nav bar as well as the cards @ `index.html`
