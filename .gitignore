@@ -1,3 +1,4 @@
 lectures/
 build/
 .DS_Store
+.venv
