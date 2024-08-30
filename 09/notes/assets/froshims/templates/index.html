@@ -5,12 +5,9 @@
 <h1>Register</h1>
 <form action="/register", method="post">
   <input type="text" name="name" placeholder="Name" autocomplete="off" autofocus required>
-  <select name="sport">
-    <option disabled selected value="">Sport</option>
-    {% for sport in sports %}
-    <option value="{{ sport }}">{{ sport }}</option>
-    {% endfor %}}
-  </select>
+  {% for sport in sports %}
+    <input type="checkbox" name="sport" value="{{ sport }}">{{ sport }}</input>
+  {% endfor %}
   <button type="submit">Register</button>
 </form>
 
