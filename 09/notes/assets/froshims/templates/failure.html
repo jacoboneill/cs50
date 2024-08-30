@@ -2,8 +2,10 @@
 
   {% block body %}
 
-<h1>Failure</h1>
-<p>{{ msg }}</p>
-<img src="https://imgs.xkcd.com/comics/duty_calls.png" alt="XKCD Comic 386">
+<div class="mt-3 pagination-centered text-center">
+  <h1>Error 400</h1>
+  <p class="lead mb-5">{{ msg }}</p>
+  <img src="https://imgs.xkcd.com/comics/duty_calls.png" alt="XKCD Comic 386" class="img-fluid">
+</div>
 
 {% endblock %}

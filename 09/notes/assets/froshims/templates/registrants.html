@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>Registrants</h1>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Sport</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for name in registrants %}
+    <tr>
+      <td>{{ name }}</td>
+      <td>
+        {% for sport in registrants[name] %}
+        {{ sport }}{{ ", " if not loop.last  else "" }}
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
