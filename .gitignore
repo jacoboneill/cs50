@@ -3,3 +3,4 @@ build/
 .DS_Store
 .venv
 __pycache__
+flask_session
