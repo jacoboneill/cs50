@@ -9,17 +9,15 @@
     <tr>
       <th>Name</th>
       <th>Sport</th>
+      <th>Date Registered</th>
     </tr>
   </thead>
   <tbody>
-    {% for name in registrants %}
+    {% for registration in registrants %}
     <tr>
-      <td>{{ name }}</td>
-      <td>
-        {% for sport in registrants[name] %}
-        {{ sport }}{{ ", " if not loop.last  else "" }}
-        {% endfor %}
-      </td>
+      <td>{{ registration['name'] }}</td>
+      <td>{{ registration['sport'] }}</td>
+      <td>{{ registration['created_at'] }}</td>
     </tr>
     {% endfor %}
   </tbody>
