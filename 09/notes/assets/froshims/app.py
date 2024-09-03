@@ -74,3 +74,6 @@ def registrants():
             "created_at": datetime.strptime(row['created_at'], "%Y-%m-%d %H:%M:%S").strftime("%B %d, %Y %I:%M %p")
         })
     return render_template("registrants.html", registrants=registrants)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="8080")
