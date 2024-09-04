@@ -8,12 +8,14 @@ SPORTS = ["Basketball", "Ultimate Frisbee", "Football"]
 
 DATABASE = "./registransts.db"
 
+
 def connect_db():
     db = getattr(g, "_database", None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
         db.row_factory = sqlite3.Row
     return db
+
 
 def query_db(query, args=(), one=False):
     con = connect_db()
@@ -23,18 +25,21 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (res[0] if res else None) if one else res
 
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
 
+
 def init_db():
     with app.app_context():
         db = connect_db()
-        with app.open_resource('schema.sql', mode='r') as f:
+        with app.open_resource("schema.sql", mode="r") as f:
             db.cursor().executescript(f.read())
         db.commit()
+
 
 @app.route("/")
 def index():
@@ -53,7 +58,10 @@ def register():
 
     for sport in sports:
         if sport not in SPORTS:
-            return render_template("failure.html", msg=f"Sport: {sport} is not allowed."), 400
+            return (
+                render_template("failure.html", msg=f"Sport: {sport} is not allowed."),
+                400,
+            )
 
     # REGISTRANTS[request.form.get("name")] = sorted(request.form.getlist("sport"))
     for sport in sports:
@@ -63,17 +71,23 @@ def register():
 
     return redirect("/registrants")
 
+
 @app.route("/registrants")
 def registrants():
     registrants_sql = query_db("SELECT name, sport, created_at FROM registrations")
     registrants = []
     for row in registrants_sql:
-        registrants.append({
-            "name": row['name'],
-            "sport": row['sport'],
-            "created_at": datetime.strptime(row['created_at'], "%Y-%m-%d %H:%M:%S").strftime("%B %d, %Y %I:%M %p")
-        })
+        registrants.append(
+            {
+                "name": row["name"],
+                "sport": row["sport"],
+                "created_at": datetime.strptime(
+                    row["created_at"], "%Y-%m-%d %H:%M:%S"
+                ).strftime("%B %d, %Y %I:%M %p"),
+            }
+        )
     return render_template("registrants.html", registrants=registrants)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="8080")
