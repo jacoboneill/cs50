@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+  {% block title %}
+  Dashboard
+  {% endblock %}
+
+  {% block main %}
+  <h1>Total: {{ total | usd }}</h1>
+  <h2>Cash Balance: {{ balance | usd }}</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Price per Stock</th>
+        <th>Count</th>
+        <th>Value</th>
+        <th>Time and Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stock in portfolio %}
+      <tr>
+        <td>{{ stock["symbol"] }}</td>
+        <td>{{ stock["price_per_stock"] }}</td>
+        <td>{{ stock["share_count"] }}</td>
+        <td>{{ stock["value"] }}</td>
+        <td>{{ stock["created_at"] }}</td>
+        {% endfor %}
+      </tr>
+  </table>
+  {% endblock %}

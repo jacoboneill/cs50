@@ -12,7 +12,8 @@ CREATE TABLE transactions (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   user_id INTEGER NOT NULL,
   symbol TEXT NOT NULL,
-  price REAL NOT NULL,
+  share_count INTEGER NOT NULL,
+  price_per_stock REAL NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );

@@ -35,7 +35,26 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("TODO", 200)
+    # Get stocks data
+    balance = round(
+        db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0][
+            "cash"
+        ],
+        2,
+    )
+
+    total = balance
+    portfolio = db.execute(
+        "SELECT symbol, share_count, price_per_stock, created_at FROM transactions WHERE user_id = ?",
+        session["user_id"],
+    )
+    for stock in portfolio:
+        stock["value"] = round(stock["share_count"] * stock["price_per_stock"], 2)
+        total += stock["value"]
+
+    return render_template(
+        "index.html", portfolio=portfolio, balance=balance, total=total
+    )
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -72,9 +91,10 @@ def buy():
                 user_id,
             )
             db.execute(
-                "INSERT INTO transactions (user_id, symbol, price) VALUES(?, ?, ?)",
+                "INSERT INTO transactions (user_id, symbol, share_count, price_per_stock) VALUES(?, ?, ?, ?)",
                 user_id,
                 stock["symbol"],
+                shares,
                 stock["price"],
             )
         else:
