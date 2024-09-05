@@ -113,9 +113,13 @@ def quote():
             return apology(f"must provide symbol{', symbol is blank' if symbol else ''}", 400)
 
         data = lookup(symbol)
-        symbol = data["symbol"]
-        price = usd(data["price"])
-        return render_template("quoted.html", symbol=symbol, price=price)
+        if data:
+            app.logger.debug(data)
+            symbol = data["symbol"]
+            price = usd(data["price"])
+            return render_template("quoted.html", symbol=symbol, price=price)
+        else:
+            return apology(f"Symbol {symbol} not found", 400)
     else:
         return render_template("quote.html")
 
