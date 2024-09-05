@@ -54,7 +54,7 @@ def buy():
         # Check shares
         shares = request.form.get("shares")
         if not shares.isnumeric() and int(shares) > 0:
-            return apology(f"shares: {shares} is not a positive integer")
+            return apology(f"shares: {shares} is not a positive integer", 400)
         shares = int(shares)
 
         user_id = session["user_id"]
@@ -65,7 +65,7 @@ def buy():
             db.execute("UPDATE users SET cash = ? WHERE id = ?", balance - requested_price, user_id)
             db.execute("INSERT INTO transactions (user_id, symbol, price) VALUES(?, ?, ?)", user_id, stock["symbol"], stock["price"])
         else:
-            return apology("Error, user does not have enough funds to complete purchase", 300)
+            return apology("Error, user does not have enough funds to complete purchase", 400)
 
         return redirect("/") 
     else:
