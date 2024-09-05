@@ -5,30 +5,35 @@
   {% endblock %}
 
   {% block main %}
-  <h1>Total: {{ total | usd }}</h1>
-  <h2>Cash Balance: {{ balance | usd }}</h2>
-
   <table>
     <thead>
       <tr>
         <th>Symbol</th>
-        <th>Price per Stock</th>
-        <th>Count</th>
-        <th>Value</th>
-        <th>Current Price</th>
-        <th>Time and Date</th>
+        <th>Shares</th>
+        <th>Price</th>
+        <th>TOTAL</th>
       </tr>
     </thead>
     <tbody>
       {% for stock in portfolio %}
       <tr>
         <td>{{ stock["symbol"] }}</td>
-        <td>{{ stock["price_per_stock"] }}</td>
-        <td>{{ stock["share_count"] }}</td>
-        <td>{{ stock["value"] }}</td>
-        <td>{{ stock["current_price"] }}</td>
-        <td>{{ stock["created_at"] }}</td>
-        {% endfor %}
+        <td>{{ stock["count"]}}</td>
+        <td>{{ stock["price_per_stock"] | usd }}</td>
+        <td>{{ stock["total_price"] | usd }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td>Cash</td>
+        <td></td>
+        <td></td>
+        <td>{{ balance | usd }}</td>
+      </tr>
+      <tr>
+        <td>TOTAL</td>
+        <td></td>
+        <td></td>
+        <td>{{ total | usd }}</td>
       </tr>
   </table>
   {% endblock %}

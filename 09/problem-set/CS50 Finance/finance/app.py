@@ -36,22 +36,20 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     # Get stocks data
-    balance = round(
-        db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0][
-            "cash"
-        ],
-        2,
+    balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0][
+        "cash"
+    ]
+    portfolio = db.execute(
+        "SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol;",
+        session["user_id"],
     )
 
     total = balance
-    portfolio = db.execute(
-        "SELECT symbol, share_count, price_per_stock, created_at FROM transactions WHERE user_id = ?",
-        session["user_id"],
-    )
-    for stock in portfolio:
-        stock["value"] = round(stock["share_count"] * stock["price_per_stock"], 2)
-        total += stock["value"]
-        stock["current_price"] = lookup(stock["symbol"])["price"]
+    stock_total = db.execute(
+        "SELECT SUM(t.count*t.price_per_stock) AS total FROM transactions t;"
+    )[0]["total"]
+    if stock_total:
+        total += stock_total
 
     return render_template(
         "index.html", portfolio=portfolio, balance=balance, total=total
@@ -92,7 +90,7 @@ def buy():
                 user_id,
             )
             db.execute(
-                "INSERT INTO transactions (user_id, symbol, share_count, price_per_stock) VALUES(?, ?, ?, ?)",
+                "INSERT INTO transactions (user_id, symbol, count, price_per_stock) VALUES(?, ?, ?, ?)",
                 user_id,
                 stock["symbol"],
                 shares,
