@@ -46,7 +46,9 @@ def buy():
         # Check symbol exists and isn't blank
         symbol = request.form.get("symbol")
         if not symbol or not symbol.strip():
-            return apology(f"must provide symbol{', symbol is blank' if symbol else ''}", 400)
+            return apology(
+                f"must provide symbol{', symbol is blank' if symbol else ''}", 400
+            )
         stock = lookup(symbol)
         if not stock:
             return apology(f"Symbol {symbol} not found", 400)
@@ -58,16 +60,29 @@ def buy():
         shares = int(shares)
 
         user_id = session["user_id"]
-        balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
+        balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[
+            0
+        ]["cash"]
         requested_price = stock["price"] * shares
 
         if balance - requested_price > 0:
-            db.execute("UPDATE users SET cash = ? WHERE id = ?", balance - requested_price, user_id)
-            db.execute("INSERT INTO transactions (user_id, symbol, price) VALUES(?, ?, ?)", user_id, stock["symbol"], stock["price"])
+            db.execute(
+                "UPDATE users SET cash = ? WHERE id = ?",
+                balance - requested_price,
+                user_id,
+            )
+            db.execute(
+                "INSERT INTO transactions (user_id, symbol, price) VALUES(?, ?, ?)",
+                user_id,
+                stock["symbol"],
+                stock["price"],
+            )
         else:
-            return apology("Error, user does not have enough funds to complete purchase", 400)
+            return apology(
+                "Error, user does not have enough funds to complete purchase", 400
+            )
 
-        return redirect("/") 
+        return redirect("/")
     else:
         return render_template("buy.html")
 
@@ -137,17 +152,20 @@ def quote():
         # Check if symbol was requested
         symbol = request.form.get("symbol")
         if not symbol or not symbol.strip():
-            return apology(f"must provide symbol{', symbol is blank' if symbol else ''}", 400)
+            return apology(
+                f"must provide symbol{', symbol is blank' if symbol else ''}", 400
+            )
 
         data = lookup(symbol)
         if data:
             symbol = data["symbol"]
-            price = usd(data["price"])
+            price = data["price"]
             return render_template("quoted.html", symbol=symbol, price=price)
         else:
             return apology(f"Symbol {symbol} not found", 400)
     else:
         return render_template("quote.html")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
