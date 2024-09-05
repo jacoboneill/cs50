@@ -123,7 +123,7 @@ def register():
         # Check passwords are not blank or whitespace
         passwords = [
             request.form.get("password"),
-            request.form.get("re_entered_password"),
+            request.form.get("confirmation"),
         ]
         for password in passwords:
             if not password or not password.strip():
