@@ -42,7 +42,34 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+        # Check symbol exists and isn't blank
+        symbol = request.form.get("symbol")
+        if not symbol or not symbol.strip():
+            return apology(f"must provide symbol{', symbol is blank' if symbol else ''}", 400)
+        stock = lookup(symbol)
+        if not stock:
+            return apology(f"Symbol {symbol} not found", 400)
+
+        # Check shares
+        shares = request.form.get("shares")
+        if not shares.isnumeric() and int(shares) > 0:
+            return apology(f"shares: {shares} is not a positive integer")
+        shares = int(shares)
+
+        user_id = session["user_id"]
+        balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
+        requested_price = stock["price"] * shares
+
+        if balance - requested_price > 0:
+            db.execute("UPDATE users SET cash = ? WHERE id = ?", balance - requested_price, user_id)
+            db.execute("INSERT INTO transactions (user_id, symbol, price) VALUES(?, ?, ?)", user_id, stock["symbol"], stock["price"])
+        else:
+            return apology("Error, user does not have enough funds to complete purchase", 300)
+
+        return redirect("/") 
+    else:
+        return render_template("buy.html")
 
 
 @app.route("/history")
@@ -114,7 +141,6 @@ def quote():
 
         data = lookup(symbol)
         if data:
-            app.logger.debug(data)
             symbol = data["symbol"]
             price = usd(data["price"])
             return render_template("quoted.html", symbol=symbol, price=price)
