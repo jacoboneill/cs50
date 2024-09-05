@@ -51,6 +51,7 @@ def index():
     for stock in portfolio:
         stock["value"] = round(stock["share_count"] * stock["price_per_stock"], 2)
         total += stock["value"]
+        stock["current_price"] = lookup(stock["symbol"])["price"]
 
     return render_template(
         "index.html", portfolio=portfolio, balance=balance, total=total
