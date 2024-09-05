@@ -36,9 +36,9 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     # Get stocks data
-    balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0][
-        "cash"
-    ]
+    balance = db.execute("SELECT u.cash FROM users u WHERE id = ?", session["user_id"])[
+        0
+    ]["cash"]
     portfolio = db.execute(
         "SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol;",
         session["user_id"],
@@ -78,9 +78,9 @@ def buy():
         shares = int(shares)
 
         user_id = session["user_id"]
-        balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[
-            0
-        ]["cash"]
+        balance = db.execute(
+            "SELECT u.cash FROM users u WHERE u.id = ?", session["user_id"]
+        )[0]["cash"]
         requested_price = stock["price"] * shares
 
         if balance - requested_price > 0:
@@ -132,7 +132,7 @@ def login():
 
         # Query database for username
         rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", request.form.get("username")
+            "SELECT * FROM users u WHERE u.username = ?", request.form.get("username")
         )
 
         # Ensure username exists and password is correct
@@ -216,12 +216,12 @@ def register():
 
         # Register user
         usernames_query = db.execute(
-            "SELECT username FROM users WHERE username = ?", username
+            "SELECT u.username FROM users u WHERE u.username = ?", username
         )
         if len(usernames_query) != 0:
             return apology(f"username {username} already exists.", 400)
         else:
-            registration = db.execute(
+            db.execute(
                 "INSERT INTO users (username, hash) VALUES(?, ?)",
                 username,
                 generate_password_hash(password),
