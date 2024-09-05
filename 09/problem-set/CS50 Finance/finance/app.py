@@ -111,40 +111,48 @@ def quote():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    #TODO check Status Codes
     """Register user"""
     if request.method == "POST":
         # Check username is not blank or whitespace
         username = request.form.get("username")
         if not username or not username.strip():
             return apology(
-                f"must provide username{', username blank' if username else ''}", 403
+                f"must provide username{', username blank' if username else ''}", 400
             )
 
         # Check passwords are not blank or whitespace
-        passwords = [request.form.get("password"), request.form.get("re_entered_password")]
+        passwords = [
+            request.form.get("password"),
+            request.form.get("re_entered_password"),
+        ]
         for password in passwords:
             if not password or not password.strip():
                 return apology(
-                    f"must provide password{', password is blank' if password else ''}", 403
+                    f"must provide password{', password is blank' if password else ''}",
+                    400,
                 )
         # Check passwords match
         if passwords[0] != passwords[1]:
-            return apology("passwords do not match", 403)
+            return apology("passwords do not match", 400)
         else:
             password = passwords[0]
 
         # Register user
-        usernames_query = db.execute("SELECT username FROM users WHERE username = ?", username)
+        usernames_query = db.execute(
+            "SELECT username FROM users WHERE username = ?", username
+        )
         if len(usernames_query) != 0:
-            return apology(f"username {username} already exists.", 403)
+            return apology(f"username {username} already exists.", 400)
         else:
-            registration = db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
+            registration = db.execute(
+                "INSERT INTO users (username, hash) VALUES(?, ?)",
+                username,
+                generate_password_hash(password),
+            )
             return redirect("/login")
-    
+
     else:
         return render_template("register.html")
-
 
 
 @app.route("/sell", methods=["GET", "POST"])
