@@ -53,7 +53,7 @@ def buy():
 
         # Check shares
         shares = request.form.get("shares")
-        if not shares.isnumeric() and int(shares) > 0:
+        if not shares.isnumeric() or int(shares) <= 0:
             return apology(f"shares: {shares} is not a positive integer", 400)
         shares = int(shares)
 
