@@ -38,16 +38,25 @@ def index():
         0
     ]["cash"]
 
-    portfolio = db.execute("SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;", session["user_id"])
-    
-    portfolio_total = db.execute("SELECT SUM(t.count * t.price_per_stock) AS stocks_total FROM transactions t WHERE t.user_id = ? GROUP BY symbol HAVING SUM(t.count) > 0;", session["user_id"])
+    portfolio = db.execute(
+        "SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;",
+        session["user_id"],
+    )
+
+    portfolio_total = db.execute(
+        "SELECT SUM(t.count * t.price_per_stock) AS stocks_total FROM transactions t WHERE t.user_id = ? GROUP BY symbol HAVING SUM(t.count) > 0;",
+        session["user_id"],
+    )
     if not portfolio_total == 0:
         portfolio_total = 0
     else:
         portfolio_total = portfolio_total[0]["stocks_total"]
 
     return render_template(
-        "index.html", portfolio=portfolio, balance=balance, total=balance + portfolio_total
+        "index.html",
+        portfolio=portfolio,
+        balance=balance,
+        total=balance + portfolio_total,
     )
 
 
@@ -103,9 +112,13 @@ def buy():
 @app.route("/history")
 @login_required
 def history():
-    data = db.execute("SELECT t.symbol, ABS(t.count) AS count, t.price_per_stock, t.created_at, t.price_per_stock * t.count AS total_price, CASE WHEN t.count > 0 THEN '+' ELSE '-' END AS buy_sell FROM transactions t WHERE t.user_id = ?;", session["user_id"])
+    data = db.execute(
+        "SELECT t.symbol, ABS(t.count) AS count, t.price_per_stock, t.created_at, t.price_per_stock * t.count AS total_price, CASE WHEN t.count > 0 THEN '+' ELSE '-' END AS buy_sell FROM transactions t WHERE t.user_id = ?;",
+        session["user_id"],
+    )
     app.logger.debug(data)
     return render_template("history.html", data=data)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -229,8 +242,10 @@ def sell():
         # Validate stock input
         stock = request.form.get("symbol")
         if not stock or not stock.strip():
-            return apology(f"must provide stock{', stock blank;' if stock else ''}", 400)
-        
+            return apology(
+                f"must provide stock{', stock blank;' if stock else ''}", 400
+            )
+
         # Validate count input
         count = request.form.get("shares")
         if not count.isnumeric() or int(count) <= 0:
@@ -238,15 +253,26 @@ def sell():
         count = int(count)
 
         # Validate bank has stock and count is lower than owned stocks
-        owned_stocks = db.execute("SELECT t.symbol AS stock, SUM(t.count) AS count FROM transactions t WHERE t.user_id = ? AND t.symbol = ? GROUP BY t.symbol;", session["user_id"], stock)[0]
+        owned_stocks = db.execute(
+            "SELECT t.symbol AS stock, SUM(t.count) AS count FROM transactions t WHERE t.user_id = ? AND t.symbol = ? GROUP BY t.symbol;",
+            session["user_id"],
+            stock,
+        )[0]
         if not owned_stocks:
             return apology(f"stock: {stock} is not owned by user", 400)
         if count > owned_stocks["count"]:
-            return apology(f"count: {count} is more than the user owns: {owned_stocks['count']}", 400)
+            return apology(
+                f"count: {count} is more than the user owns: {owned_stocks['count']}",
+                400,
+            )
 
         # Update database with transaction
         sell_price = lookup(stock)["price"]
-        db.execute("UPDATE users SET cash = cash + ? WHERE id = ?", sell_price * count, session["user_id"])
+        db.execute(
+            "UPDATE users SET cash = cash + ? WHERE id = ?",
+            sell_price * count,
+            session["user_id"],
+        )
         db.execute(
             "INSERT INTO transactions (user_id, symbol, count, price_per_stock) VALUES(?, ?, ?, ?)",
             session["user_id"],
@@ -259,7 +285,11 @@ def sell():
 
     else:
         # Reduce database from list of dicts with same key to list of stocks
-        stocks = [i["symbol"] for i in db.execute("SELECT t.symbol FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;", session["user_id"])]
+        stocks = [
+            i["symbol"]
+            for i in db.execute(
+                "SELECT t.symbol FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;",
+                session["user_id"],
+            )
+        ]
         return render_template("sell.html", stocks=stocks)
-
-

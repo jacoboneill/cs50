@@ -55,7 +55,7 @@ def lookup(symbol):
         return {
             "name": quote_data["companyName"],
             "price": quote_data["latestPrice"],
-            "symbol": symbol.upper()
+            "symbol": symbol.upper(),
         }
     except requests.RequestException as e:
         print(f"Request error: {e}")
