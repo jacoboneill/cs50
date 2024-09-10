@@ -39,11 +39,15 @@ def index():
     ]["cash"]
 
     portfolio = db.execute("SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;", session["user_id"])
-
-    total = balance + db.execute("SELECT SUM(t.count * t.price_per_stock) AS stocks_total FROM transactions t WHERE t.user_id = ? GROUP BY symbol HAVING SUM(t.count) > 0;", session["user_id"])[0]["stocks_total"]
+    
+    portfolio_total = db.execute("SELECT SUM(t.count * t.price_per_stock) AS stocks_total FROM transactions t WHERE t.user_id = ? GROUP BY symbol HAVING SUM(t.count) > 0;", session["user_id"])
+    if not portfolio_total == 0:
+        portfolio_total = 0
+    else:
+        portfolio_total = portfolio_total[0]["stocks_total"]
 
     return render_template(
-        "index.html", portfolio=portfolio, balance=balance, total=total
+        "index.html", portfolio=portfolio, balance=balance, total=balance + portfolio_total
     )
 
 
