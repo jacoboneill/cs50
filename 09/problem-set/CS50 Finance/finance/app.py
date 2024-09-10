@@ -24,7 +24,6 @@ db = SQL("sqlite:///finance.db")
 
 @app.after_request
 def after_request(response):
-    """Ensure responses aren't cached"""
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
@@ -34,22 +33,14 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    """Show portfolio of stocks"""
     # Get stocks data
     balance = db.execute("SELECT u.cash FROM users u WHERE id = ?", session["user_id"])[
         0
     ]["cash"]
-    portfolio = db.execute(
-        "SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol;",
-        session["user_id"],
-    )
 
-    total = balance
-    stock_total = db.execute(
-        "SELECT SUM(t.count*t.price_per_stock) AS total FROM transactions t;"
-    )[0]["total"]
-    if stock_total:
-        total += stock_total
+    portfolio = db.execute("SELECT t.symbol, SUM(t.count) AS count, t.price_per_stock, SUM((t.count * t.price_per_stock)) AS total_price FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;", session["user_id"])
+
+    total = balance + db.execute("SELECT SUM(t.count * t.price_per_stock) AS stocks_total FROM transactions t WHERE t.user_id = ? GROUP BY symbol HAVING SUM(t.count) > 0;", session["user_id"])[0]["stocks_total"]
 
     return render_template(
         "index.html", portfolio=portfolio, balance=balance, total=total
@@ -59,7 +50,6 @@ def index():
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
-    """Buy shares of stock"""
     if request.method == "POST":
         # Check symbol exists and isn't blank
         symbol = request.form.get("symbol")
@@ -109,13 +99,11 @@ def buy():
 @app.route("/history")
 @login_required
 def history():
-    """Show history of transactions"""
     return apology("TODO")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """Log user in"""
 
     # Forget any user_id
     session.clear()
@@ -154,7 +142,6 @@ def login():
 
 @app.route("/logout")
 def logout():
-    """Log user out"""
 
     # Forget any user_id
     session.clear()
@@ -166,7 +153,6 @@ def logout():
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
 def quote():
-    """Get stock quote."""
     if request.method == "POST":
         # Check if symbol was requested
         symbol = request.form.get("symbol")
@@ -188,7 +174,6 @@ def quote():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user"""
     if request.method == "POST":
         # Check username is not blank or whitespace
         username = request.form.get("username")
@@ -235,5 +220,41 @@ def register():
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
 def sell():
-    """Sell shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+        # Validate stock input
+        stock = request.form.get("symbol")
+        if not stock or not stock.strip():
+            return apology(f"must provide stock{', stock blank;' if stock else ''}", 400)
+        
+        # Validate count input
+        count = request.form.get("shares")
+        if not count.isnumeric() or int(count) <= 0:
+            return apology(f"count: {count} is not a positive integer", 400)
+        count = int(count)
+
+        # Validate bank has stock and count is lower than owned stocks
+        owned_stocks = db.execute("SELECT t.symbol AS stock, SUM(t.count) AS count FROM transactions t WHERE t.user_id = ? AND t.symbol = ? GROUP BY t.symbol;", session["user_id"], stock)[0]
+        if not owned_stocks:
+            return apology(f"stock: {stock} is not owned by user", 400)
+        if count > owned_stocks["count"]:
+            return apology(f"count: {count} is more than the user owns: {owned_stocks['count']}", 400)
+
+        # Update database with transaction
+        sell_price = lookup(stock)["price"]
+        db.execute("UPDATE users SET cash = cash + ? WHERE id = ?", sell_price * count, session["user_id"])
+        db.execute(
+            "INSERT INTO transactions (user_id, symbol, count, price_per_stock) VALUES(?, ?, ?, ?)",
+            session["user_id"],
+            stock,
+            -1 * count,
+            sell_price,
+        )
+
+        return redirect("/")
+
+    else:
+        # Reduce database from list of dicts with same key to list of stocks
+        stocks = [i["symbol"] for i in db.execute("SELECT t.symbol FROM transactions t WHERE t.user_id = ? GROUP BY t.symbol HAVING SUM(t.count) > 0;", session["user_id"])]
+        return render_template("sell.html", stocks=stocks)
+
+
