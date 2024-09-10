@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+  {% block title %}
+  History
+  {% endblock %}
+
+  {% block main %}
+  <table>
+    <thead>
+      <tr>
+        <th>Buy / Sell</th>
+        <th>Symbol</th>
+        <th>Shares</th>
+        <th>Price</th>
+        <th>TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stock in data %}
+      <tr>
+        <td>{{ stock["buy_sell"] }}
+        <td>{{ stock["symbol"] }}</td>
+        <td>{{ stock["count"]}}</td>
+        <td>{{ stock["price_per_stock"] | usd }}</td>
+        <td>{{ stock["total_price"] | usd }}</td>
+      </tr>
+      {% endfor %}
+  </table>
+  {% endblock %}

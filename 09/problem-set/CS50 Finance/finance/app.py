@@ -103,8 +103,9 @@ def buy():
 @app.route("/history")
 @login_required
 def history():
-    return apology("TODO")
-
+    data = db.execute("SELECT t.symbol, ABS(t.count) AS count, t.price_per_stock, t.created_at, t.price_per_stock * t.count AS total_price, CASE WHEN t.count > 0 THEN '+' ELSE '-' END AS buy_sell FROM transactions t WHERE t.user_id = ?;", session["user_id"])
+    app.logger.debug(data)
+    return render_template("history.html", data=data)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

@@ -1,1 +1,0 @@
-sqlite3 finance.db < schema.sql && flask run --debug
